@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>김하진최고미녀 말랑이</title>
+<style>
+:root{--pink:#f27ba5;--deep:#a34c87;--cream:#fff8f5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100svh;background:radial-gradient(circle at 50% 30%,#fff 0,#fff7f4 55%,#ffe8ef 100%);font-family:system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;color:#a94f7b;display:flex;justify-content:center;overflow:hidden;touch-action:manipulation}
+.game{width:min(100%,520px);min-height:100svh;padding:22px 20px 28px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.top{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pill{background:#fff;border:2px solid #f5a0bc;border-radius:24px;padding:10px 15px;font-weight:800;box-shadow:0 4px 0 #f9d4e1}
+.score{font-size:15px}.score b{font-size:24px;margin-left:7px;color:#d64f89}
+.timer{font-size:23px;font-variant-numeric:tabular-nums}
+h1{font-size:clamp(21px,5.5vw,28px);text-align:center;line-height:1.45;margin:10px 0 0}
+.sub{margin:0;text-align:center;font-size:14px;color:#c47798}
+.play-area{flex:1;width:100%;min-height:330px;display:flex;align-items:center;justify-content:center;position:relative}
+.squishy{width:min(76vw,330px);height:min(76vw,330px);max-height:330px;max-width:330px;border-radius:43% 57% 52% 48% / 48% 43% 57% 52%;border:3px solid rgba(255,255,255,.9);background:radial-gradient(ellipse at 32% 22%,rgba(255,255,255,.98) 0%,rgba(255,255,255,.45) 12%,transparent 28%),radial-gradient(ellipse at 70% 78%,#f5a8c6 0%,#f8c6d8 40%,#fbdce6 72%,#fff0f5 100%);box-shadow:inset -15px -20px 35px #e99bbd66,inset 12px 10px 25px #fff,0 22px 35px #d57ba833;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:transform .12s,border-radius .12s;animation:float 3s ease-in-out infinite;position:relative}
+.squishy:before{content:"";position:absolute;top:13%;left:18%;width:23%;height:10%;background:#fff9;border-radius:50%;filter:blur(3px);transform:rotate(-35deg)}
+.squishy span{font-weight:1000;font-size:clamp(26px,7vw,39px);letter-spacing:-2px;color:#8c4c91;text-shadow:0 2px 0 #fff9;line-height:1.2;overflow-wrap:anywhere;z-index:1}
+.squishy:active,.squishy.pressed{transform:scale(.88,.82) rotate(2deg);border-radius:50% 50% 45% 55% / 44% 48% 52% 56%;animation:none}
+@keyframes float{0%,100%{translate:0 0;rotate:-2deg}50%{translate:0 -8px;rotate:2deg}}
+.hearts{position:absolute;font-size:28px;color:#f27ba5;pointer-events:none}
+.h1{left:5%;top:23%;transform:rotate(-15deg)}.h2{right:7%;bottom:22%;transform:rotate(14deg)}
+.bottom{width:100%;display:flex;flex-direction:column;gap:12px}
+.meter{height:17px;border-radius:20px;border:2px solid #f2a0bc;background:white;padding:2px;overflow:hidden}
+.fill{height:100%;width:0%;border-radius:20px;background:linear-gradient(90deg,#f5a1c0,#d95591);transition:width .15s}
+button{border:0;border-radius:18px;padding:14px 18px;background:linear-gradient(135deg,#f17ca5,#dc5d91);color:white;font-size:17px;font-weight:800;box-shadow:0 5px 0 #c74d81;cursor:pointer}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #c74d81}
+.note{text-align:center;font-size:12px;color:#bc829a}
+.overlay{position:fixed;inset:0;background:#fff7f4dd;display:none;align-items:center;justify-content:center;padding:24px}
+.modal{background:white;border:2px solid #f5a0bc;border-radius:28px;padding:28px 22px;text-align:center;max-width:340px;width:100%;box-shadow:0 15px 40px #c75a8a30}
+.modal h2{margin:0 0 8px}.modal p{font-size:18px}
+</style>
+</head>
+<body>
+<main class="game">
+  <div class="top">
+    <div class="pill score">SCORE <b id="score">0</b></div>
+    <div class="pill timer">⏱ <span id="time">30</span>s</div>
+  </div>
+  <h1>말랑이를 마구 만져서<br>‘김하진최고미녀’를 응원해!</h1>
+  <p class="sub">말랑이를 누를 때마다 점수가 올라가요 💗</p>
+  <section class="play-area" aria-label="말랑이 게임">
+    <div class="hearts h1">♡ ✦</div>
+    <div class="squishy" id="squishy" role="button" tabindex="0" aria-label="말랑이 누르기"><span>김하진<br>최고미녀</span></div>
+    <div class="hearts h2">✦ ♡</div>
+  </section>
+  <div class="bottom">
+    <div class="meter"><div class="fill" id="fill"></div></div>
+    <button id="start">게임 시작하기 💕</button>
+    <div class="note">30초 동안 최대한 많이 눌러보세요!</div>
+  </div>
+</main>
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>💗 게임 끝! 💗</h2>
+    <p>김하진최고미녀 점수<br><strong id="finalScore">0</strong>점</p>
+    <button id="again">다시 하기</button>
+  </div>
+</div>
+<script>
+const ball=document.getElementById('squishy'), scoreEl=document.getElementById('score'), timeEl=document.getElementById('time'), fill=document.getElementById('fill'), startBtn=document.getElementById('start'), overlay=document.getElementById('overlay'), finalScore=document.getElementById('finalScore');
+let score=0,time=30,running=false,timer=null;
+let audioCtx=null;
+function squishSound(){
+ try{
+  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  const now=audioCtx.currentTime;
+  // Soft, sticky, squishy pop: a short pitch bend plus a muted low thump.
+  const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+  osc.type='triangle';
+  osc.frequency.setValueAtTime(360,now);
+  osc.frequency.exponentialRampToValueAtTime(115,now+0.13);
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.exponentialRampToValueAtTime(0.22,now+0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+0.19);
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  osc.start(now);osc.stop(now+0.2);
+  const osc2=audioCtx.createOscillator(), gain2=audioCtx.createGain();
+  osc2.type='sine';
+  osc2.frequency.setValueAtTime(150,now);
+  osc2.frequency.exponentialRampToValueAtTime(75,now+0.09);
+  gain2.gain.setValueAtTime(0.0001,now);
+  gain2.gain.exponentialRampToValueAtTime(0.12,now+0.01);
+  gain2.gain.exponentialRampToValueAtTime(0.0001,now+0.12);
+  osc2.connect(gain2);gain2.connect(audioCtx.destination);
+  osc2.start(now);osc2.stop(now+0.13);
+ }catch(e){}
+}
+function press(){
+ if(!running){ if(score===0) startGame(); else return; }
+ if(!running)return;
+ score++; scoreEl.textContent=score; fill.style.width=Math.min(100,score/40*100)+'%';
+ squishSound();
+ ball.classList.add('pressed'); setTimeout(()=>ball.classList.remove('pressed'),110);
+ if(navigator.vibrate) navigator.vibrate(12);
+}
+function startGame(){
+ clearInterval(timer);score=0;time=30;running=true;scoreEl.textContent='0';timeEl.textContent='30';fill.style.width='0%';overlay.style.display='none';startBtn.textContent='누르는 중…';
+ timer=setInterval(()=>{time--;timeEl.textContent=time;if(time<=0){clearInterval(timer);running=false;finalScore.textContent=score;overlay.style.display='flex';startBtn.textContent='게임 시작하기 💕';}},1000);
+}
+ball.addEventListener('pointerdown',e=>{e.preventDefault();press()});
+ball.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();press()}});
+// Use both click and pointerup for better compatibility with mobile browsers.
+let lastStartAt=0;
+function safeStart(e){
+ const now=Date.now();
+ if(now-lastStartAt<350)return;
+ lastStartAt=now;
+ if(e && e.cancelable)e.preventDefault();
+ startGame();
+}
+startBtn.addEventListener('click',safeStart);
+startBtn.addEventListener('pointerup',safeStart);
+document.getElementById('again').addEventListener('click',startGame);
+</script>
+</body>
+</html>
